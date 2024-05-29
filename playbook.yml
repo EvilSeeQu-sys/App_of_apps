@@ -1,0 +1,57 @@
+---
+- name: Wdrożenie aplikacji
+  hosts: all
+  become: yes
+  vars:
+    deployment_path: "/home/ubuntu/app"
+    compose_path: "./docker-compose.yml"
+
+  roles:
+    - role: geerlingguy.docker
+
+  tasks:
+    - name: Aktualizacja apt-get i pamięci podręcznej
+      apt:
+        update_cache: yes
+        force_apt_get: yes
+        cache_valid_time: 3600
+
+    - name: Instalacja paczki python3-pip
+      apt:
+        name: python3-pip
+        state: present
+
+    - name: Instalacja modułu python docker (<7.0) za pomocą pip
+      pip:
+        name: docker
+        state: present
+        version: "<7.0"
+
+    - name: Instalacja modułu docker-compose za pomocą pip
+      pip:
+        name: docker-compose
+        state: present
+
+    - name: Sprawdzenie czy Docker jest uruchomiony
+      shell: docker info
+      register: docker_info
+      failed_when: "'Server Version' not in docker_info.stdout"
+      changed_when: false
+
+    - name: Tworzenie katalogu {{ deployment_path }} jeśli nie istnieje
+      file:
+        path: "{{ deployment_path }}"
+        state: directory
+
+    - name: Kopiowanie pliku docker-compose.yml do katalogu {{ deployment_path }}
+      copy:
+        src: "{{ compose_path }}"
+        dest: "{{ deployment_path }}/docker-compose.yml"
+
+    - name: Uruchomienie docker-compose ze zmiennymi FRONTEND_IMAGE i BACKEND_IMAGE
+      command: docker-compose up -d
+      args:
+        chdir: "{{ deployment_path }}"
+      environment:
+        FRONTEND_IMAGE: "{{ lookup('env', 'FRONTEND_IMAGE') }}"
+        BACKEND_IMAGE: "{{ lookup('env', 'BACKEND_IMAGE') }}"

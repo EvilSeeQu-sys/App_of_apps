@@ -4,8 +4,8 @@ from selenium.webdriver.common.keys import Keys
 from os import environ
 from selenium.webdriver.common.by import By
 
-application_URL = environ.get('APPLICATION_URL', 'http://192.168.44.44:5000/')
-selenium_URL = environ.get('SELENIUM_URL', 'http://192.168.44.44:4444/wd/hub')
+application_URL = environ.get('APPLICATION_URL', 'http://192.168.56.15:5000/')
+selenium_URL = environ.get('SELENIUM_URL', 'http://192.168.56.15:4444/wd/hub')
 
 
 class PythonOrgSearch(unittest.TestCase):
