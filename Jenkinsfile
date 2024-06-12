@@ -22,7 +22,7 @@ pipeline {
             }
         }
 
-        stage('Show version') {
+        stage('Show Version') {
             steps {
                 script{
                     currentBuild.description = "Backend: ${backendDockerTag}, Frontend: ${frontendDockerTag}"
@@ -30,13 +30,13 @@ pipeline {
             }
         }
 
-        stage('Clean running containers') {
+        stage('Clean Containers') {
             steps {
                 sh "docker rm -f frontend backend"
             }
         }
 
-        stage('Deploy application') {
+        stage('Deploy Application') {
             steps {
                 script {
                     withEnv(["FRONTEND_IMAGE=$frontendImage:$frontendDockerTag", 
