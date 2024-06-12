@@ -11,7 +11,7 @@ selenium_URL = environ.get('SELENIUM_URL', 'http://192.168.56.15:4444/wd/hub')
 class AppTest(unittest.TestCase):
     def setUp(self):
         #self.driver = webdriver.Firefox()
-         self.driver = webdriver.Remote(
+          self.driver = webdriver.Remote(
              command_executor=selenium_URL,
              options=webdriver.FirefoxOptions())
 
